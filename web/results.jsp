@@ -50,10 +50,85 @@
 
     /* Cards */
     .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      display: flex;
+      flex-wrap: wrap;
       gap: 20px;
     }
+
+    .event-card {
+      width: 350px;
+      background: white;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      transition: 0.3s;
+    }
+
+    .event-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .event-image {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+    }
+
+    .event-content {
+      padding: 18px;
+    }
+
+    .event-content h3 {
+      margin: 0 0 10px;
+      color: #2d89ef;
+      font-size: 22px;
+    }
+
+    .desc {
+      color: #666;
+      font-size: 14px;
+      line-height: 1.5;
+      height: 40px;
+      overflow: hidden;
+    }
+
+    .info-row {
+      margin-top: 10px;
+      color: #444;
+      font-size: 14px;
+    }
+
+    .category {
+      background: #eef4ff;
+      color: #2d89ef;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .btn-reserve {
+      display: inline-block;
+      margin-top: 15px;
+      background: #28a745;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .btn-reserve:hover {
+      background: #218838;
+    }
+
+    .full {
+      margin-top: 15px;
+      color: red;
+      font-weight: bold;
+    }
+
 
     .card {
       background: white;
@@ -131,27 +206,53 @@
 
     <% for (Event e : events) { %>
 
-    <div class="card">
-      <h3><%= e.getTitle() %></h3>
+    <div class="event-card">
 
       <% if (e.getImage() != null && !e.getImage().isEmpty()) { %>
-      <img src="<%= e.getImage() %>"
-           style="width:100%; height:160px; object-fit:cover; border-radius:10px; margin-bottom:10px;">
+      <img src="<%= e.getImage() %>" class="event-image">
       <% } %>
-      <p class="info"><%= e.getDescription() %></p>
-      <p class="info"><strong>Date:</strong> <%= e.getEventDate() %></p>
-      <p class="info"><strong>Location:</strong> <%= e.getLocation() %></p>
-      <p class="info"><strong>Seats:</strong> <%= e.getSeatsRemaining() %></p>
-      <p><strong>Category:</strong> <%= e.getCategory() %></p>
-      <p><strong>Date:</strong> <%= e.getEventDate() %></p>
 
-      <% if (e.getSeatsRemaining() > 0) { %>
-      <a href="reserve?eventId=<%= e.getId() %>" class="btn btn-reserve">
-        Reserve
-      </a>
-      <% } else { %>
-      <p style="color:red; font-weight:bold;">Full</p>
-      <% } %>
+      <div class="event-content">
+
+        <h3><%= e.getTitle() %></h3>
+
+        <p class="desc">
+          <%= e.getDescription() %>
+        </p>
+
+        <div class="info-row">
+          <span><%= e.getEventDate() %></span>
+        </div>
+
+        <div class="info-row">
+          <span> <%= e.getLocation() %></span>
+        </div>
+
+        <div class="info-row">
+          <span>Seats: <%= e.getSeatsRemaining() %></span>
+        </div>
+
+        <div class="info-row">
+            <span class="category">
+                <%= e.getCategory() %>
+            </span>
+        </div>
+
+        <% if (e.getSeatsRemaining() > 0) { %>
+
+        <a href="reserve?eventId=<%= e.getId() %>"
+           class="btn-reserve">
+          Reserve
+        </a>
+
+        <% } else { %>
+
+        <div class="full">Full</div>
+
+        <% } %>
+
+      </div>
+
     </div>
 
     <% } %>

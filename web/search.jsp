@@ -102,16 +102,26 @@
 
     <form action="search" method="get">
 
-      <input type="text" name="keyword" placeholder="Enter keyword">
+      <input type="text"
+             name="keyword"
+             id="keyword"
+             placeholder="Enter keyword">
 
-      <select name="type">
+      <select name="type" id="searchType">
+
         <option value="title">Search by Title</option>
-        <option value="location">Search by Location</option>
-        <option value="type">Search by Event Type</option>
-        <option value="category">Search by Category</option>
-      </select>
 
-      <input type="date" name="date">
+        <option value="location">Search by Location</option>
+
+        <option value="type">Search by Event Type</option>
+
+        <option value="department">Search by Department</option>
+
+        <option value="category">Search by Category</option>
+
+        <option value="date">Search by Date</option>
+
+      </select>
 
       <div class="checkbox">
         <input type="checkbox" id="available" name="available">
@@ -125,6 +135,48 @@
   </div>
 
 </div>
+
+<script>
+
+  const searchType = document.getElementById("searchType");
+  const keywordInput = document.getElementById("keyword");
+
+  searchType.addEventListener("change", function() {
+
+    if (this.value === "date") {
+
+      keywordInput.type = "date";
+      keywordInput.placeholder = "";
+
+    } else {
+
+      keywordInput.type = "text";
+
+      switch(this.value) {
+
+        case "location":
+          keywordInput.placeholder = "Enter location";
+          break;
+
+        case "type":
+          keywordInput.placeholder = "Enter event type";
+          break;
+
+        case "department":
+          keywordInput.placeholder = "Enter department";
+          break;
+
+        case "category":
+          keywordInput.placeholder = "Enter category";
+          break;
+
+        default:
+          keywordInput.placeholder = "Enter title";
+      }
+    }
+  });
+
+</script>
 
 </body>
 </html>

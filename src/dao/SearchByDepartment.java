@@ -1,12 +1,13 @@
 package dao;
 
-import model.EventFactory;
 import model.Event;
+import model.EventFactory;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class SearchByTitle implements SearchStrategy {
+public class SearchByDepartment implements SearchStrategy {
 
     @Override
     public List<Event> search(String keyword) {
@@ -18,9 +19,10 @@ public class SearchByTitle implements SearchStrategy {
         ResultSet rs = null;
 
         try {
+
             conn = DBConnection.getConnection();
 
-            String sql = "SELECT * FROM events WHERE title LIKE ?";
+            String sql = "SELECT * FROM events WHERE department LIKE ?";
             ps = conn.prepareStatement(sql);
 
             ps.setString(1, "%" + keyword + "%");

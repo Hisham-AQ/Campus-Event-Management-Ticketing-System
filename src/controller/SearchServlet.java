@@ -1,6 +1,6 @@
 package controller;
 
-import dao.EventDAO;
+import dao.*;
 import model.Event;
 
 import javax.servlet.*;
@@ -25,57 +25,57 @@ public class SearchServlet extends HttpServlet {
 
         keyword = keyword.toLowerCase().trim();
 
-        List<Event> allEvents = EventDAO.getAllEvents();
-        List<Event> filtered = new ArrayList<>();
+        // Strategy Pattern
+        SearchStrategy strategy;
 
-        for (Event e : allEvents) {
+        switch (type) {
 
-            boolean match = true;
+            case "location":
+                strategy = new SearchByLocation();
+                break;
 
-            // Keyword search
-            switch (type) {
+            case "type":
+                strategy = new SearchByType();
+                break;
 
-                case "title":
-                    match = e.getTitle() != null &&
-                            e.getTitle().toLowerCase().contains(keyword);
-                    break;
+            case "category":
+                strategy = new SearchByCategory();
+                break;
 
-                case "location":
-                    match = e.getLocation() != null &&
-                            e.getLocation().toLowerCase().contains(keyword);
-                    break;
+            case "department":
+                strategy = new SearchByDepartment();
+                break;
 
-                case "type":
-                    match = e.getEventType() != null &&
-                            e.getEventType().toLowerCase().contains(keyword);
-                    break;
+            case "date":
+                strategy = new SearchByDate();
+                break;
 
-                case "category":
-                    match = e.getCategory() != null &&
-                            e.getCategory().toLowerCase().contains(keyword);
-                    break;
+            default:
+                strategy = new SearchByTitle();
+        }
 
-                default:
-                    match = true;
-            }
+        // Search using strategy
+        List<Event> filtered = strategy.search(keyword);
 
-            // Date filter
-            if (match && date != null && !date.isEmpty()) {
-                match = e.getEventDate() != null &&
-                        e.getEventDate().contains(date);
-            }
+        // Additional filters
+        Iterator<Event> iterator = filtered.iterator();
+
+        while (iterator.hasNext()) {
+
+            Event e = iterator.next();
 
             // Availability filter
-            if (match && available != null) {
-                match = e.getSeatsRemaining() > 0;
-            }
+            if (available != null) {
 
-            if (match) {
-                filtered.add(e);
+                if (e.getSeatsRemaining() <= 0) {
+                    iterator.remove();
+                }
             }
         }
 
         request.setAttribute("events", filtered);
-        request.getRequestDispatcher("results.jsp").forward(request, response);
+
+        request.getRequestDispatcher("results.jsp")
+                .forward(request, response);
     }
 }
